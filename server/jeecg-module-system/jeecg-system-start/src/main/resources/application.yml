@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: crabs
+  profiles:
+    active: '@profile.name@'
