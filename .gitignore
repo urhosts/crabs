@@ -7,7 +7,7 @@
 ## backend
 /server/**/target
 /server/**/logs
-logs
+**/logs
 
 ## front
 **/*.lock
