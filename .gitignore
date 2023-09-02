@@ -1,0 +1,50 @@
+## ide
+/server/.idea
+/server/**/.idea
+/server/*.iml
+/server/rebel.xml
+
+## backend
+/server/**/target
+/server/**/logs
+logs
+
+## front
+**/*.lock
+
+
+
+/vue3/node_modules
+/vue3/.DS_Store
+/vue3/.github
+/vue3/dist
+/vue3/.npmrc
+/vue3/.cache
+
+/vue3/tests/server/static
+/vue3/tests/server/static/upload
+
+/vue3/.local
+# local env files
+/vue3/.env.local
+.env.*.local
+/vue3/.eslintcache
+
+# Log files
+/vue3/**/npm-debug.log*
+/vue3/yarn-debug.log*
+/vue3/yarn-error.log*
+/vue3/pnpm-debug.log*
+
+# Editor directories and files
+/vue3/.idea
+# .vscode
+/vue3/*.suo
+/vue3/*.ntvs*
+/vue3/*.njsproj
+/vue3/*.sln
+/vue3/*.sw?
+/vue3/os_del.cmd
+/vue3/.vscode/
+/vue3/.history/
+/vue3/svn clear.bat
