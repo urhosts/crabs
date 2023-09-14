@@ -2,8 +2,11 @@ package org.jeecg.modules.crabs.bait.controller;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -30,7 +33,10 @@ import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -192,8 +198,49 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 		 String baitPic = remainingBait.getBaitPic();
 		 String basPath = jeecgBaseConfig.getPath().getUpload();
 		 String absPath = basPath+ File.separator+baitPic;
-		 log.debug("需要识别的图片路径为:{}",absPath);
-		 remainingBait.setRecognitionPic(baitPic);
+		 String url = "http://localhost:5005/index";
+		 String result = new String();
+		 try {
+			 RestTemplate template = new RestTemplate();
+			 // 封装参数，千万不要替换为Map与HashMap，否则参数无法传递
+			 MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
+			 paramMap.add("img_name", absPath);
+			 //String result 1、使用postForObject请求接口
+			 result = template.postForObject(url, paramMap, String.class);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 }
+		 // 创建一个Map来存放键值对
+		 Map<String, String> keyValueMap = new HashMap<>();
+
+		 // 使用逗号分割字符串
+		 String[] keyValuePairs = result.split(",");
+
+		 // 遍历键值对并添加到Map中
+		 for (String pair : keyValuePairs) {
+			 String[] keyValue = pair.split("=");
+			 if (keyValue.length == 2) {
+				 String key = keyValue[0];
+				 String value = keyValue[1];
+				 keyValueMap.put(key, value);
+			 }
+		 }
+
+		 log.debug("需要识别的图片路径为:{}",keyValueMap.get("img_result"));
+		 String result_pic = keyValueMap.get("img_result");
+		 String result_count = keyValueMap.get("img_count");
+		 Integer count = Integer.valueOf(result_count);
+		 String regexPattern = "upFiles(.*)"; // 匹配 "result" 之后的任何字符
+		 Pattern pattern = Pattern.compile(regexPattern);
+		 Matcher matcher = pattern.matcher(result_pic);
+		 String absResult = new String();
+		 if (matcher.find()) {
+			 absResult = matcher.group(1);
+		 }
+
+//		 String replacedString = resutl_pic.replace("\\", "\\\\");
+		 remainingBait.setRecognitionPic(absResult);
+		 remainingBait.setBaitCount(count);
 		 // 调用 图片识别 返回结果
 		 return Result.ok(remainingBait);
 	 }
