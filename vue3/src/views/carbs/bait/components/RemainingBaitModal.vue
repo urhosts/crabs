@@ -68,7 +68,7 @@
             console.log(data);
             setFieldsValue({
                 "recognitionPic":[data.recognitionPic],
-                "baitCount":2
+                "baitCount":[data.baitCount]
             })
             // useForm.setFieldsValue("recognitionPic",response.RecognitionPic);
             // useForm.setFieldsValue("baitCount",2);
