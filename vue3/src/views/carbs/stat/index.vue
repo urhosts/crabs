@@ -48,7 +48,7 @@
     async function handleSubmit() {
         console.log("查询,handleSubmit");
     }
-  async function ondateChange(){
+  async function ondateChange(date, dateString){
         this.dateData = date;
          console.log(dateData);
   }
