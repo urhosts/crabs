@@ -228,5 +228,62 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 		 // 调用 图片识别 返回结果
 		 return Result.ok(remainingBait);
 	 }
+		 /**
+	  * 分页列表查询
+	  *
+	  * @param remainingBait
+	  * @param req
+	  * @return
+	  */
+	 //@AutoLog(value = "摄食量可视化-通过时间查询")
+	 // 摄食量可视化-通过时间查询，默认查询最近7天，选取时间跨度为一周
+	 @ApiOperation(value="残饵计数识别-分页列表查询", notes="残饵计数识别-分页列表查询")
+	 @GetMapping(value = "/stat")
+	 public Result<List<StatResultBait>> queryTimeList(RemainingBait remainingBait, HttpServletRequest req) {
+		 QueryWrapper<RemainingBait> queryWrapper = QueryGenerator.initQueryWrapper(remainingBait, req.getParameterMap());
+		 List<RemainingBait> baitResultList = remainingBaitService.list(queryWrapper);
+		 List<StatResultBait> statResultBaitList = new ArrayList<>();
+		 // 创建一个SimpleDateFormat对象，指定日期格式
+		 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		 for (RemainingBait baitItem : baitResultList) {
+			 StatResultBait statResultBait = new StatResultBait();
+			 statResultBait.setCreateTime(dateFormat.format(baitItem.getCreateTime()));
+			 statResultBait.setBaitCount(baitItem.getBaitCount());
+			 statResultBait.setBaitInput(baitItem.getBaitInput());
+			 statResultBaitList.add(statResultBait);
+		 }
+
+		 // 创建一个新的列表，用于存储合并后的结果
+		 List<StatResultBait> mergedList = new ArrayList<>();
+
+		 // 遍历原始列表并合并相同createTime的对象
+		 for (StatResultBait statResult : statResultBaitList) {
+			 boolean found = false;
+			 for (StatResultBait merged : mergedList) {
+				 if (merged.getCreateTime().equals(statResult.getCreateTime())) {
+					 // 如果找到相同createTime的对象，将其余属性相加
+					 merged.setBaitCount(merged.getBaitCount() + statResult.getBaitCount());
+					 merged.setBaitInput(merged.getBaitInput() + statResult.getBaitInput());
+					 merged.setBaitIntake(merged.getBaitIntake() + statResult.getBaitIntake());
+					 found = true;
+					 break;
+				 }
+			 }
+			 if (!found) {
+				 // 如果没有找到相同createTime的对象，将对象直接添加到合并列表
+				 mergedList.add(statResult);
+			 }
+		 }
+
+		 for (StatResultBait statResultItem : mergedList) {
+			 Integer baitCount = statResultItem.getBaitCount();
+			 Integer baitInput = statResultItem.getBaitInput();
+			 double baitIntake = baitInput - (baitCount*0.036);
+			 statResultItem.setBaitIntake(baitIntake);
+		 }
+
+//		 log.debug("需要识别的图片路径为:{}", createTimeBegin, createTimeEnd);
+		 return Result.OK(mergedList);
+	 }
 
 }
