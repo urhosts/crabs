@@ -21,6 +21,11 @@ export const columns: BasicColumn[] = [
     align:"center",
     dataIndex: 'baitCount'
    },
+  {
+    title: '投喂量',
+    align:"center",
+    dataIndex: 'baitInput'
+  },
 ];
 //查询数据
 export const searchFormSchema: FormSchema[] = [
@@ -55,6 +60,11 @@ export const formSchema: FormSchema[] = [
     field: 'baitCount',
     component: 'InputNumber',
     dynamicDisabled:true
+  },
+  {
+    label: '投喂量',
+    field: 'baitInput',
+    component: 'InputNumber',
   },
 	// TODO 主键隐藏字段，目前写死为ID
 	{
