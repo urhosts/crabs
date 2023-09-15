@@ -3,8 +3,8 @@
     <a-form ref="queryForm" :model="planModel" :label-col="labelCol" :wrapper-col="wrapperCol" >
       <a-row :gutter="2">
         <a-col :span="8">
-            <a-form-item label="选择时间范围" :value="dateData" @change="ondateChange">
-          <a-range-picker style="width:250px"  />
+            <a-form-item label="选择时间范围" >
+          <a-range-picker style="width:250px"  :value="dateData" @change="ondateChange"/>
           <a-button type="primary" preIcon="ant-design:search-outlined" @click="searchQuery">查询</a-button>
         </a-form-item>
         </a-col>
