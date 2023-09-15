@@ -58,4 +58,8 @@ public class RemainingBait implements Serializable {
 	@Excel(name = "识别结果", width = 15)
     @ApiModelProperty(value = "识别结果")
     private String recognitionPic;
+	    /**投喂量*/
+    @Excel(name = "投喂量", width = 15)
+    @ApiModelProperty(value = "投喂量")
+    private java.lang.Integer baitInput;
 }
