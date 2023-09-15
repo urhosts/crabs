@@ -3,7 +3,7 @@
     <a-form ref="queryForm" :model="planModel" :label-col="labelCol" :wrapper-col="wrapperCol" >
       <a-row :gutter="2">
         <a-col :span="8">
-            <a-form-item label="选择时间范围" v-model:value="planModel.rangeTime">
+            <a-form-item label="选择时间范围" :value="dateData" @change="ondateChange">
           <a-range-picker style="width:250px"  />
           <a-button type="primary" preIcon="ant-design:search-outlined" @click="searchQuery">查询</a-button>
         </a-form-item>
@@ -33,7 +33,7 @@
   const dataSource = ref([]);
   const queryForm = ref();
   const planModel = ref();
-  planModel.rangeTime="";
+  const dateData = ref();
   const labelCol = reactive({
     xs: {span: 24},
     sm: {span: 6},
@@ -48,6 +48,10 @@
     async function handleSubmit() {
         console.log("查询,handleSubmit");
     }
+  async function ondateChange(){
+        this.dateData = date;
+         console.log(dateData);
+  }
   async function searchQuery(){
     console.log("查询");
     console.log(planModel);
