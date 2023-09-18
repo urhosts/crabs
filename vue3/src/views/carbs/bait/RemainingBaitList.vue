@@ -62,9 +62,10 @@
            api: list,
            columns,
            canResize:false,
-           formConfig: {
+           useSearchForm:false,
+        formConfig: {
               //labelWidth: 120,
-              schemas: searchFormSchema,
+              // schemas: searchFormSchema,
               autoSubmitOnEnter:true,
               showAdvancedButton:true,
               fieldMapToNumber: [
