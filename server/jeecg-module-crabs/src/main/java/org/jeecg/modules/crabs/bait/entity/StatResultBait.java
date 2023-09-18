@@ -14,4 +14,8 @@ public class StatResultBait {
 
     private double baitIntake;
 
+    private String name;
+
+    private double value;
+
 }
