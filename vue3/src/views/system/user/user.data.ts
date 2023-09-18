@@ -173,16 +173,16 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
     dynamicRules: ({ model, schema }) => rules.duplicateCheckRule('sys_user', 'work_no', model, schema, true),
   },
-  {
-    label: '职务',
-    field: 'post',
-    required: false,
-    component: 'JSelectPosition',
-    componentProps: {
-      rowKey: 'code',
-      labelKey: 'name',
-    },
-  },
+  // {
+  //   label: '职务',
+  //   field: 'post',
+  //   required: false,
+  //   component: 'JSelectPosition',
+  //   componentProps: {
+  //     rowKey: 'code',
+  //     labelKey: 'name',
+  //   },
+  // },
   {
     label: '角色',
     field: 'selectedroles',
@@ -194,43 +194,43 @@ export const formSchema: FormSchema[] = [
       valueField: 'id',
     },
   },
-  {
-    label: '所属部门',
-    field: 'selecteddeparts',
-    component: 'JSelectDept',
-    componentProps: ({ formActionType, formModel }) => {
-      return {
-        sync: false,
-        checkStrictly: true,
-        defaultExpandLevel: 2,
-
-        onSelect: (options, values) => {
-          const { updateSchema } = formActionType;
-          //所属部门修改后更新负责部门下拉框数据
-          updateSchema([
-            {
-              field: 'departIds',
-              componentProps: { options },
-            },
-          ]);
-          //所属部门修改后更新负责部门数据
-          formModel.departIds && (formModel.departIds = formModel.departIds.filter((item) => values.value.indexOf(item) > -1));
-        },
-      };
-    },
-  },
-  {
-    label: '租户',
-    field: 'relTenantIds',
-    component: 'ApiSelect',
-    componentProps: {
-      mode: 'multiple',
-      api: getAllTenantList,
-      numberToString: true,
-      labelField: 'name',
-      valueField: 'id',
-    },
-  },
+  // {
+  //   label: '所属部门',
+  //   field: 'selecteddeparts',
+  //   component: 'JSelectDept',
+  //   componentProps: ({ formActionType, formModel }) => {
+  //     return {
+  //       sync: false,
+  //       checkStrictly: true,
+  //       defaultExpandLevel: 2,
+  //
+  //       onSelect: (options, values) => {
+  //         const { updateSchema } = formActionType;
+  //         //所属部门修改后更新负责部门下拉框数据
+  //         updateSchema([
+  //           {
+  //             field: 'departIds',
+  //             componentProps: { options },
+  //           },
+  //         ]);
+  //         //所属部门修改后更新负责部门数据
+  //         formModel.departIds && (formModel.departIds = formModel.departIds.filter((item) => values.value.indexOf(item) > -1));
+  //       },
+  //     };
+  //   },
+  // },
+  // {
+  //   label: '租户',
+  //   field: 'relTenantIds',
+  //   component: 'ApiSelect',
+  //   componentProps: {
+  //     mode: 'multiple',
+  //     api: getAllTenantList,
+  //     numberToString: true,
+  //     labelField: 'name',
+  //     valueField: 'id',
+  //   },
+  // },
   {
     label: '身份',
     field: 'userIdentity',
@@ -240,7 +240,7 @@ export const formSchema: FormSchema[] = [
       return {
         options: [
           { label: '普通用户', value: 1, key: '1' },
-          { label: '上级', value: 2, key: '2' },
+          { label: '管理人员', value: 2, key: '2' },
         ],
         onChange: () => {
           formModel.userIdentity == 1 && (formModel.departIds = []);
@@ -308,17 +308,17 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
     rules: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' }],
   },
-  {
-    label: '工作流引擎',
-    field: 'activitiSync',
-    defaultValue: 1,
-    component: 'JDictSelectTag',
-    componentProps: {
-      dictCode: 'activiti_sync',
-      type: 'radio',
-      stringToNumber: true,
-    },
-  },
+  // {
+  //   label: '工作流引擎',
+  //   field: 'activitiSync',
+  //   defaultValue: 1,
+  //   component: 'JDictSelectTag',
+  //   componentProps: {
+  //     dictCode: 'activiti_sync',
+  //     type: 'radio',
+  //     stringToNumber: true,
+  //   },
+  // },
 ];
 
 export const formPasswordSchema: FormSchema[] = [
