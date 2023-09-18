@@ -13,6 +13,7 @@ import org.jeecg.common.system.base.controller.JeecgController;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.config.JeecgBaseConfig;
 import org.jeecg.modules.crabs.bait.entity.RemainingBait;
+import org.jeecg.modules.crabs.bait.entity.StatResultBait;
 import org.jeecg.modules.crabs.bait.service.IRemainingBaitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.LinkedMultiValueMap;
@@ -24,13 +25,13 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
- /**
+/**
  * @Description: 残饵计数识别
  * @Author: jeecg-boot
  * @Date:   2023-09-03
@@ -228,7 +229,8 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 		 // 调用 图片识别 返回结果
 		 return Result.ok(remainingBait);
 	 }
-		 /**
+
+	 /**
 	  * 分页列表查询
 	  *
 	  * @param remainingBait
@@ -240,11 +242,40 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 	 @ApiOperation(value="残饵计数识别-分页列表查询", notes="残饵计数识别-分页列表查询")
 	 @GetMapping(value = "/stat")
 	 public Result<List<StatResultBait>> queryTimeList(RemainingBait remainingBait, HttpServletRequest req) {
-		 QueryWrapper<RemainingBait> queryWrapper = QueryGenerator.initQueryWrapper(remainingBait, req.getParameterMap());
+		 LinkedHashMap<String, String[]> parameter = new LinkedHashMap<>();
+		 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		 // 获取当前系统时间
+		 Date currentDate = new Date();
+
+		 // 创建一个Calendar对象，并设置为当前时间
+		 Calendar calendar = Calendar.getInstance();
+		 calendar.setTime(currentDate);
+
+		 // 计算一周前的时间
+		 calendar.add(Calendar.WEEK_OF_YEAR, -1);
+		 Date oneWeekAgo = calendar.getTime();
+
+		 String currentDateStr = dateFormat.format(currentDate);
+		 String oneWeekAgoStr = dateFormat.format(oneWeekAgo);
+
+		 ArrayList<String> currentDateStrArray = new ArrayList<>();
+		 currentDateStrArray.add(currentDateStr);
+		 String[] currentDateStrChar = currentDateStrArray.toArray(new String[0]);
+
+		 ArrayList<String> oneWeekAgoStrArray = new ArrayList<>();
+		 oneWeekAgoStrArray.add(oneWeekAgoStr);
+		 String[] oneWeekAgoStrChar = oneWeekAgoStrArray.toArray(new String[0]);
+
+		 parameter.put("createTime_begin", oneWeekAgoStrChar);
+		 parameter.put("createTime_end", currentDateStrChar);
+//		 req.getParameterMap().putAll(parameter);
+//		 req.getParameterMap().put("createTime_begin", currentDateStrChar);
+//		 req.getParameterMap().put("createTime_end", oneWeekAgoStrChar);
+
+		 QueryWrapper<RemainingBait> queryWrapper = QueryGenerator.initQueryWrapper(remainingBait, parameter);
 		 List<RemainingBait> baitResultList = remainingBaitService.list(queryWrapper);
 		 List<StatResultBait> statResultBaitList = new ArrayList<>();
 		 // 创建一个SimpleDateFormat对象，指定日期格式
-		 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		 for (RemainingBait baitItem : baitResultList) {
 			 StatResultBait statResultBait = new StatResultBait();
 			 statResultBait.setCreateTime(dateFormat.format(baitItem.getCreateTime()));
@@ -280,10 +311,13 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 			 Integer baitInput = statResultItem.getBaitInput();
 			 double baitIntake = baitInput - (baitCount*0.036);
 			 statResultItem.setBaitIntake(baitIntake);
+			 statResultItem.setName(statResultItem.getCreateTime());
+			 statResultItem.setValue(baitIntake);
 		 }
+		 // 使用Stream API按照age属性逆序排列列表
+		 Collections.reverse(mergedList);
 
 //		 log.debug("需要识别的图片路径为:{}", createTimeBegin, createTimeEnd);
 		 return Result.OK(mergedList);
 	 }
-
 }
