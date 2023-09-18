@@ -3,7 +3,7 @@
     <template #tableTitle>
       <a-button type="primary" preIcon="ant-design:plus-outlined" @click="handleCreate"> 新增</a-button>
       <a-button type="primary" preIcon="ant-design:export-outlined" @click="onExportXls"> 导出</a-button>
-      <j-upload-button type="primary" preIcon="ant-design:import-outlined" @click="onImportXls">导入</j-upload-button>
+<!--      <j-upload-button type="primary" preIcon="ant-design:import-outlined" @click="onImportXls">导入</j-upload-button>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <template #overlay>
           <a-menu>
@@ -155,10 +155,10 @@
         label: '用户',
         onClick: handleUser.bind(null, record),
       },
-      {
-        label: '授权',
-        onClick: handlePerssion.bind(null, record),
-      },
+      // {
+      //   label: '授权',
+      //   onClick: handlePerssion.bind(null, record),
+      // },
     ];
   }
 
@@ -182,10 +182,10 @@
           confirm: handleDelete.bind(null, record),
         },
       },
-      {
-        label: '首页配置',
-        onClick: handleIndexConfig.bind(null, record.roleCode),
-      },
+      // {
+      //   label: '首页配置',
+      //   onClick: handleIndexConfig.bind(null, record.roleCode),
+      // },
     ];
   }
 </script>
