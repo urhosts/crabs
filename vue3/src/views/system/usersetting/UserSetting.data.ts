@@ -18,24 +18,24 @@ export const settingList = [
     component: 'BaseSetting',
     icon:'ant-design:user-outlined'
   },
-  {
-    key: '2',
-    name: '我的租户',
-    component: 'TenantSetting',
-    icon:'ant-design:team-outlined'
-  },
+  // {
+  //   key: '2',
+  //   name: '我的租户',
+  //   component: 'TenantSetting',
+  //   icon:'ant-design:team-outlined'
+  // },
    {
     key: '3',
     name: '账号安全',
     component: 'AccountSetting',
     icon:'ant-design:lock-outlined'
   },
-  {
-    key: '4',
-    name: '第三方APP',
-    component: 'WeChatDingSetting',
-    icon: 'ant-design:contacts-outlined',
-  },
+  // {
+  //   key: '4',
+  //   name: '第三方APP',
+  //   component: 'WeChatDingSetting',
+  //   icon: 'ant-design:contacts-outlined',
+  // },
 ];
 
 
