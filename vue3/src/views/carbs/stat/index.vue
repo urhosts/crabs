@@ -18,9 +18,9 @@
     <a-card :bordered="false" style="height: 100%">
       <a-tabs >
         <a-tab-pane key="bar" tab="摄食量可视化">
-          <Bar :chartData="dataSource" height="60vh"></Bar>
+<!--          <Bar :chartData="dataSource" height="60vh"></Bar>-->
+          <Bar :chartData="dataSource" height="60vh" :option = option></Bar>
         </a-tab-pane>
-
       </a-tabs>
     </a-card>
   </div>
@@ -42,44 +42,55 @@ const wrapperCol = reactive({
   xs: {span: 24},
   sm: {span: 16},
 })
+
 /**
  * 表单提交事件
  * */
 async function handleSubmit() {
   console.log("查询,handleSubmit");
 }
-// async function ondateChange(date, dateString){
-//   this.dateData = date;
-//   console.log(dateData);
-// }
-// async function searchQuery(){
-//   console.log("查询");
-//   console.log(planModel);
-//   loadDate("/bait/remainingBait/stat");
-// }
+
+
+var option = {
+  title: {
+    text: '蟹群日摄食量可视化',
+    left: 'center'
+  },
+
+  yAxis: {
+    name: '克',
+    type: 'value',
+    axisLabel: {
+      formatter: '{value} 克'
+    }
+  },
+
+  series: [
+    {
+      name: '日摄食量',
+      type: 'bar',
+      label: {
+        show: true,          // 显示标签
+        position: 'top',     // 标签位置（上方）
+        formatter: '{c} 克',
+      },
+      data: [],
+    },
+  ],
+}
+
 async function loadDate(url, type, params) {
   // demoData();
   const res = await defHttp.get({ url, params }, { isTransformResponse: false, errorMessageMode: 'none' });
-  if (res.success) {
-    dataSource.value = res.result;
+  for (let i = 0; i < res.result.length; i++) {
+    dataSource.value.push({
+      name: `${res.result[i].createTime}`,
+      value: res.result[i].baitIntake,
+    });
   }
-  //   dataSource.value = [];
-  //   switch (type) {
-  //     case 'year':
-  //       getYearCountSource(res.result);
-  //       break;
-  //     case 'month':
-  //       getMonthCountSource(res.result);
-  //       break;
-  //     case 'category':
-  //       getCategoryCountSource(res.result);
-  //       break;
-  //     case 'cabinet':
-  //       getCabinetCountSource(res.result);
-  //       break;
-  //     default:
-  //       break;
-  //   }
+
+  // if (res.success) {
+  //   dataSource.value = res.result;
   // }
 }
 function demoData() {
