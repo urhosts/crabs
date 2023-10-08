@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.crabs.bait.entity.RemainingBait;
 import org.jeecg.modules.crabs.prediction.entity.BaitPrediction;
 import org.jeecg.modules.crabs.prediction.service.IBaitPredictionService;
 
@@ -176,18 +177,20 @@ public class BaitPredictionController extends JeecgController<BaitPrediction, IB
 	 /**
 	  * 通过输出参数预测明日数量
 	  *
-	  * @param request
+	  * @param baitPrediction
 	  * @param response
 	  * @return
 	  */
 	 // @RequiresPermissions("prediction:bait_prediction:importExcel")
 	 @RequestMapping(value = "/predict", method = RequestMethod.POST)
-	 public Result<?> predict(HttpServletRequest request, HttpServletResponse response) {
-		 BaitPrediction baitPrediction = baitPredictionService.getById("1711030661658628097");
+	 public Result<?> predict(@RequestBody BaitPrediction baitPrediction, HttpServletResponse response) {
+		 // BaitPrediction baitPrediction = baitPredictionService.getById("1711030661658628097");
 		 if(baitPrediction==null) {
 			 return Result.error("未找到对应数据");
 		 }
-		 baitPrediction.setBaitPrediction(12.4);
+		 // baitPrediction 就是页面提交的上来的参数
+		 // 简单的将 螃蟹只数 乘以了 12.4(随便写的)作为预测值返回了
+		 baitPrediction.setBaitPrediction(baitPrediction.getCrabsCount()* 12.4);
 		 return Result.OK(baitPrediction);
 	 }
 
