@@ -183,7 +183,7 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 		 String baitPic = remainingBait.getBaitPic();
 		 String basPath = jeecgBaseConfig.getPath().getUpload();
 		 String absPath = basPath+ File.separator+baitPic;
-		 String url = "http://localhost:5005/index";
+		 String url = "http://localhost:5005/reco";
 		 String result = new String();
 		 try {
 			 RestTemplate template = new RestTemplate();
