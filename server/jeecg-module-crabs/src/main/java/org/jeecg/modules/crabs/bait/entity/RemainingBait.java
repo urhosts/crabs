@@ -62,4 +62,14 @@ public class RemainingBait implements Serializable {
     @Excel(name = "投喂量", width = 15)
     @ApiModelProperty(value = "投喂量")
     private java.lang.Integer baitInput;
+
+    /**螃蟹只数*/
+    @Excel(name = "螃蟹只数", width = 15)
+    @ApiModelProperty(value = "螃蟹只数")
+    private java.lang.Integer crabsCount;
+
+    /**溶解氧*/
+    @Excel(name = "溶解氧", width = 15)
+    @ApiModelProperty(value = "溶解氧")
+    private java.lang.Double dissolvedOxygen;
 }

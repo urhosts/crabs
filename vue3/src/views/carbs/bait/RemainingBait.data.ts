@@ -30,7 +30,16 @@ export const columns: BasicColumn[] = [
     title: '投喂量',
     align:"center",
     dataIndex: 'baitInput'
+  },{
+    title: '螃蟹只数',
+    align:"center",
+    dataIndex: 'crabsCount'
   },
+  {
+    title: '溶解氧',
+    align:"center",
+    dataIndex: 'dissolvedOxygen'
+  }
 ];
 //查询数据
 export const searchFormSchema: FormSchema[] = [
@@ -64,12 +73,34 @@ export const formSchema: FormSchema[] = [
     label: '残饵计数',
     field: 'baitCount',
     component: 'InputNumber',
-    dynamicDisabled:true
+    dynamicDisabled:true,
+    componentProps:{
+      addonAfter:'(单位:颗)'
+    }
   },
   {
     label: '投喂量',
     field: 'baitInput',
     component: 'InputNumber',
+    componentProps:{
+      addonAfter:'(单位:克)'
+    }
+  },
+    {
+    label: '螃蟹只数',
+    field: 'crabsCount',
+    component: 'InputNumber',
+    componentProps:{
+      addonAfter:'(单位:只)'
+    }
+  },
+  {
+    label: '溶解氧',
+    field: 'dissolvedOxygen',
+    component: 'InputNumber',
+    componentProps:{
+      addonAfter:'(单位:mg/L)'
+    }
   },
   // TODO 主键隐藏字段，目前写死为ID
   {
