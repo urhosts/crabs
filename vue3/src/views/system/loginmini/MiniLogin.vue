@@ -145,7 +145,13 @@
     <!-- 第三方登录相关弹框 -->
     <ThirdModal ref="thirdModalRef"></ThirdModal>
   </div>
+  <div class="px-10">
+    <BasicModal v-bind="$attrs" @register="registerModal" title="" :width="600"  :canFullscreen="false" :okText='确定' :showCancelBtn="false" @ok="warningOKHandler" @visible-change="warningVisibleHandler">
+      <img :src="waringimg">
+    </BasicModal>
+  </div>
 </template>
+
 <script lang="ts" setup name="login-mini">
   import { getCaptcha, getCodeInfo } from '/@/api/sys/user';
   import { computed, onMounted, reactive, ref, toRaw, unref } from 'vue';
@@ -160,12 +166,23 @@
   import MiniRegister from './MiniRegister.vue';
   import MiniCodelogin from './MiniCodelogin.vue';
   import logoImg from '/@/assets/loginmini/icon/jeecg_logo.png';
+  import waringimg from '/@/assets/images/waring.png';
   import adTextImg from '/@/assets/loginmini/icon/jeecg_ad_text.png';
   import { AppLocalePicker, AppDarkModeToggle } from '/@/components/Application';
   import { useLocaleStore } from '/@/store/modules/locale';
   import { useDesign } from "/@/hooks/web/useDesign";
   import { useAppInject } from "/@/hooks/web/useAppInject";
   import { GithubFilled, WechatFilled, DingtalkCircleFilled, createFromIconfontCN } from '@ant-design/icons-vue';
+
+
+  // =========== 弹框
+   import { BasicModal, useModal, useModalInner } from '/@/components/Modal';
+  const [registerModal, {openModal:openLoginManual,closeModal }] = useModal();
+  // setModalProps({
+  //   showCancelBtn:false
+  // })
+
+  // ===========
 
   const IconFont = createFromIconfontCN({
     scriptUrl: '//at.alicdn.com/t/font_2316098_umqusozousr.js',
@@ -251,8 +268,28 @@
       phoneLogin();
     }
   }
-
+  function warningVisibleHandler(){
+    console.log("点击x按钮");
+    handleChangeCheckCode();
+  }
+  let confirmOk = false;
+  let userInfoObj = null;
+function warningOKHandler(){
+  console.log("点击确认按钮");
+  if (userInfoObj) {
+      userStore.afterLoginAction(true,userInfoObj);
+      notification.success({
+        message: t('sys.login.loginSuccessTitle'),
+        description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.realname}`,
+        duration: 3,
+      });
+      closeModal();
+  }
+  
+}
+// TODO
   async function accountLogin() {
+   confirmOk=false;
     if (!formData.username) {
       createMessage.warn(t('sys.login.accountPlaceholder'));
       return;
@@ -262,6 +299,8 @@
       return;
     }
     try {
+      
+     
       loginLoading.value = true;
       const { userInfo } = await userStore.login(
         toRaw({
@@ -270,15 +309,40 @@
           captcha: formData.inputCode,
           checkKey: randCodeData.checkKey,
           mode: 'none', //不要默认的错误提示
+          goHome: false, //不要默认的错误提示
         })
-      );
-      if (userInfo) {
-        notification.success({
-          message: t('sys.login.loginSuccessTitle'),
-          description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.realname}`,
-          duration: 3,
+      ).then((uinfo) => {
+        const pwaring = new Promise((resolve, reject) => {
+          openLoginManual(true,{ 
+            okText: "确定",
+          });
+          resolve(uinfo);
         });
-      }
+        return pwaring
+      })
+userInfoObj= userInfo;
+      // .then((userInfo) => {
+      //    if (confirmOk && userInfo) {
+      //     userStore.afterLoginAction(true,userInfo);
+      //     notification.success({
+      //       message: t('sys.login.loginSuccessTitle'),
+      //       description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.realname}`,
+      //       duration: 3,
+      //     });
+      //   }
+      // });
+      // if(confirmOk){
+      //   return userStore.afterLoginAction(true,userInfo);
+      //  }else{
+      //    return ;
+      //  }
+      // if (userInfo) {
+      //   notification.success({
+      //     message: t('sys.login.loginSuccessTitle'),
+      //     description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.realname}`,
+      //     duration: 3,
+      //   });
+      // }
     } catch (error) {
       notification.error({
         message: t('sys.api.errorTip'),
