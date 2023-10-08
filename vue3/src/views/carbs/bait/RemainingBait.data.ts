@@ -27,7 +27,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'baitCount'
   },
   {
-    title: '投喂量',
+    title: '投喂量(克)',
     align:"center",
     dataIndex: 'baitInput'
   },{
@@ -36,7 +36,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'crabsCount'
   },
   {
-    title: '溶解氧',
+    title: '溶解氧(mg/L)',
     align:"center",
     dataIndex: 'dissolvedOxygen'
   }

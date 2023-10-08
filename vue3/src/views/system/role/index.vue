@@ -155,10 +155,10 @@
         label: '用户',
         onClick: handleUser.bind(null, record),
       },
-      // {
-      //   label: '授权',
-      //   onClick: handlePerssion.bind(null, record),
-      // },
+      {
+        label: '授权',
+        onClick: handlePerssion.bind(null, record),
+      },
     ];
   }
 
