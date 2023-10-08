@@ -185,6 +185,24 @@ public class BaitPredictionController extends JeecgController<BaitPrediction, IB
 	 @RequestMapping(value = "/predict", method = RequestMethod.POST)
 	 public Result<?> predict(@RequestBody BaitPrediction baitPrediction, HttpServletResponse response) {
 		 // BaitPrediction baitPrediction = baitPredictionService.getById("1711030661658628097");
+		 Double disOxygen = baitPrediction.getDissolvedOxygen();
+		 Integer crabsNum = baitPrediction.getCrabsCount();
+		 String url = "http://localhost:5005/reco";
+		 String result = new String();
+		 try {
+			 RestTemplate template = new RestTemplate();
+			 // 封装参数，千万不要替换为Map与HashMap，否则参数无法传递
+			 MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
+			 paramMap.add("dis_oxygen", disOxygen);
+			 paramMap.add("crabs_num", crabsNum);
+			 //String result 1、使用postForObject请求接口
+			 result = template.postForObject(url, paramMap, String.class);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 }
+		 // 创建一个Map来存放键值对
+		 Map<String, String> keyValueMap = new HashMap<>();
+		 
 		 if(baitPrediction==null) {
 			 return Result.error("未找到对应数据");
 		 }
