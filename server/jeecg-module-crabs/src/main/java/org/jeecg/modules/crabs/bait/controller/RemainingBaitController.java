@@ -282,13 +282,10 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 		 BaitPrediction baitPrediction = new BaitPrediction();
 		 QueryWrapper<BaitPrediction> queryWrapperPr = QueryGenerator.initQueryWrapper(baitPrediction, parameter);
 		 List<BaitPrediction> baitPredictionList = baitPredictionService.list(queryWrapperPr);
-		 for (BaitPrediction prediction : baitPredictionList){
-
-		 }
 		 
 
 		 List<StatResultBait> statResultBaitList = new ArrayList<>();
-		 // 创建一个SimpleDateFormat对象，指定日期格式
+		 //statResultBaitList = {ArrayList@19458}  size = 9 创建一个SimpleDateFormat对象，指定日期格式
 		 for (RemainingBait baitItem : baitResultList) {
 			 StatResultBait statResultBait = new StatResultBait();
 			 statResultBait.setCreateTime(dateFormat.format(baitItem.getCreateTime()));
@@ -298,7 +295,15 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 			 statResultBait.setRecoCrabsCount(baitItem.getCrabsCount());
 			 statResultBaitList.add(statResultBait);
 		 }
-		 
+
+		 for(BaitPrediction baitPredItem : baitPredictionList) {
+			 StatResultBait statResultBait = new StatResultBait();
+			 statResultBait.setCreateTime(dateFormat.format(baitPredItem.getCreateTime()));
+			 statResultBait.setAntiCrabsCount(baitPredItem.getCrabsCount());
+			 statResultBait.setAntiDissolvedOxygen(baitPredItem.getDissolvedOxygen());
+			 statResultBait.setBaitPrediction(baitPredItem.getBaitPrediction());
+			 statResultBaitList.add(statResultBait);
+		 }
 
 		 
 		 
@@ -316,6 +321,9 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 					 merged.setBaitIntake(merged.getBaitIntake() + statResult.getBaitIntake());
 					 merged.setRecoCrabsCount(merged.getRecoCrabsCount() + statResult.getRecoCrabsCount());
 					 merged.setRecoDissolvedOxygen(merged.getRecoDissolvedOxygen() + statResult.getRecoDissolvedOxygen());
+					 merged.setAntiDissolvedOxygen(merged.getAntiDissolvedOxygen() + statResult.getAntiDissolvedOxygen());
+					 merged.setAntiCrabsCount(merged.getAntiCrabsCount() + statResult.getAntiCrabsCount());
+					 merged.setBaitPrediction(merged.getBaitPrediction() + statResult.getBaitPrediction());
 					 found = true;
 					 break;
 				 }
