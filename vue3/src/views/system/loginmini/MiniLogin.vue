@@ -280,7 +280,7 @@ function warningOKHandler(){
       userStore.afterLoginAction(true,userInfoObj);
       notification.success({
         message: t('sys.login.loginSuccessTitle'),
-        description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.realname}`,
+        description: `${t('sys.login.loginSuccessDesc')}: ${userInfoObj.realname}`,
         duration: 3,
       });
       closeModal();
