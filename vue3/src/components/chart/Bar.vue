@@ -56,7 +56,7 @@
       });
 
       watchEffect(() => {
-        props.chartData && initCharts();
+        props.option && initCharts();
       });
 
       function initCharts() {
