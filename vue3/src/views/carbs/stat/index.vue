@@ -78,7 +78,61 @@ var option = {
     },
   ],
 }
+/* 郭老板， 这就是数据结构了
+1. 增加了鼠标一放上去的标签显示
+2. 增加了两个柱状图的颜色区分
+3. 同时显示2个柱子
+let option = {
+  tooltip: {
+        trigger: 'item',
+        show:true,
+        formatter: function(params){
+          if(params.seriesIndex==0){
+            let lab = params.name +"</br>";
+            lab =lab+ "日摄食量: "+ params.data +"克</br>";
+            lab =lab+ "溶解氧: "+ params.data +"mg/L</br>";
+            lab =lab+ "投喂量: "+ params.data +"克</br>";
+            lab =lab+ "螃蟹只数: "+ params.data +"只</br>";
+            return lab;  
+          }else{
+            let lab = params.name +"</br>";
+            lab =lab+ "螃蟹只数: "+ params.data +"只</br>";
+            lab =lab+ "溶解氧: "+ params.data +"mg/L</br>";
+            lab =lab+ "预测明日投喂量: "+ params.data +"克</br>";
+            
+            return lab;  
+          }
+          
+        }
+      },
+  legend: {
+    data: ['今日摄食量估算', '明日投喂量预测']
+  },
+  xAxis: {
+    type: 'category',
+    data: ['2023-09-08', '2023-09-09', '2023-09-10', '2023-09-11', '2023-09-12', '2023-09-13', '2023-09-14']
+  },
+  yAxis: {
+    type: 'value'
+  },
+  series: [
+    {
+      name: '今日摄食量估算',
+      data: [120, 200, 150, 80, 70, 110, 130],
+      type: 'bar'
+      
+    },
+    {
+      name: '明日投喂量预测',
+      data: [20, 20, 15, 80, 70, 10, 13],
+      type: 'bar'
+    }
+  ]
+};
 
+
+*/
+  
 async function loadDate(url, type, params) {
   // demoData();
   const res = await defHttp.get({ url, params }, { isTransformResponse: false, errorMessageMode: 'none' });
