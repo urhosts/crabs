@@ -105,7 +105,7 @@ var option = {
 
   series: [
     {
-      name: '日摄食量',
+      name: '今日摄食量估算',
       type: 'bar',
       label: {
         show: true,          // 显示标签
@@ -115,7 +115,7 @@ var option = {
       data: [],
     },
     {
-      name: '明日投喂量',
+      name: '明日投喂量预测',
       type: 'bar',
       label: {
         show: true,          // 显示标签
