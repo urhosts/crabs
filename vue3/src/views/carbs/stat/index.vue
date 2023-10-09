@@ -31,6 +31,7 @@ import { defHttp } from '/@/utils/http/axios';
 import { ref, unref, reactive } from 'vue';
 import Bar from '/@/components/chart/Bar.vue';
 const dataSource = ref([]);
+const option = ref();
 const queryForm = ref();
 const planModel = ref();
 const dateData = ref();
@@ -64,7 +65,7 @@ function getItemData(itemDate){
   }
 }
   
-var option = {
+option = {
   title: {
     text: '蟹群日摄食量可视化',
     left: 'center'
