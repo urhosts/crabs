@@ -114,6 +114,16 @@ var option = {
       },
       data: [],
     },
+    {
+      name: '明日投喂量',
+      type: 'bar',
+      label: {
+        show: true,          // 显示标签
+        position: 'top',     // 标签位置（上方）
+        formatter: '{c} 克',
+      },
+      data: [],
+    }
   ],
 }
 
@@ -196,6 +206,20 @@ let option = {
 
 */
 let dataCache=null;
+async function newLoadDate(url, type, params) {
+  // demoData();
+  const res = await defHttp.get({ url, params }, { isTransformResponse: false, errorMessageMode: 'none' });
+  dataCache = res;
+  // option.series
+  let baitIntakeArray = [];
+  let predictArray = [];
+  for (let i = 0; i < res.result.length; i++) {
+    baitIntakeArray.push(res.result[i].baitIntake);
+    predictArray.push(res.result[i].baitPrediction);
+  }
+  option.series[0].data = baitIntakeArray;
+  option.series[1].data = predictArray;
+}
 async function loadDate(url, type, params) {
   // demoData();
   const res = await defHttp.get({ url, params }, { isTransformResponse: false, errorMessageMode: 'none' });
@@ -234,5 +258,6 @@ function tabChange(key) {
 }
 // loadDate(url.getYearCountInfo, 'year', {});
 // demoData();
-loadDate("/bait/remainingBait/stat");
+// loadDate("/bait/remainingBait/stat");
+newLoadDate("/bait/remainingBait/stat");
 </script>
