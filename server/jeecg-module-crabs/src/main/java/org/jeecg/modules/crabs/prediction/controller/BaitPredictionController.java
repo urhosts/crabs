@@ -1,42 +1,29 @@
 package org.jeecg.modules.crabs.prediction.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.jeecg.common.api.vo.Result;
-import org.jeecg.common.system.query.QueryGenerator;
-import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.crabs.bait.entity.RemainingBait;
-import org.jeecg.modules.crabs.prediction.entity.BaitPrediction;
-import org.jeecg.modules.crabs.prediction.service.IBaitPredictionService;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.extern.slf4j.Slf4j;
-
-import org.jeecgframework.poi.excel.ExcelImportUtil;
-import org.jeecgframework.poi.excel.def.NormalExcelConstants;
-import org.jeecgframework.poi.excel.entity.ExportParams;
-import org.jeecgframework.poi.excel.entity.ImportParams;
-import org.jeecgframework.poi.excel.view.JeecgEntityExcelView;
-import org.jeecg.common.system.base.controller.JeecgController;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.jeecg.common.system.base.controller.JeecgController;
+import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.crabs.prediction.entity.BaitPrediction;
+import org.jeecg.modules.crabs.prediction.service.IBaitPredictionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
  /**
  * @Description: 投喂量预测
@@ -187,7 +174,7 @@ public class BaitPredictionController extends JeecgController<BaitPrediction, IB
 		 // BaitPrediction baitPrediction = baitPredictionService.getById("1711030661658628097");
 		 Double disOxygen = baitPrediction.getDissolvedOxygen();
 		 Integer crabsNum = baitPrediction.getCrabsCount();
-		 String url = "http://localhost:5005/reco";
+		 String url = "http://localhost:5005/anti";
 		 String result = new String();
 		 try {
 			 RestTemplate template = new RestTemplate();
@@ -202,13 +189,30 @@ public class BaitPredictionController extends JeecgController<BaitPrediction, IB
 		 }
 		 // 创建一个Map来存放键值对
 		 Map<String, String> keyValueMap = new HashMap<>();
-		 
-		 if(baitPrediction==null) {
-			 return Result.error("未找到对应数据");
+		 // 使用逗号分割字符串
+		 String[] keyValuePairs = result.split(",");
+
+		 // 遍历键值对并添加到Map中
+		 for (String pair : keyValuePairs) {
+			 String[] keyValue = pair.split("=");
+			 if (keyValue.length == 2) {
+				 String key = keyValue[0];
+				 String value = keyValue[1];
+				 keyValueMap.put(key, value);
+			 }
 		 }
-		 // baitPrediction 就是页面提交的上来的参数
-		 // 简单的将 螃蟹只数 乘以了 12.4(随便写的)作为预测值返回了
-		 baitPrediction.setBaitPrediction(baitPrediction.getCrabsCount()* 12.4);
+
+		 String predInput = keyValueMap.get("pred_input");
+
+		 baitPrediction.setBaitPrediction(Double.valueOf(predInput.toString()));
+
+//
+//		 if(baitPrediction==null) {
+//			 return Result.error("未找到对应数据");
+//		 }
+//		 // baitPrediction 就是页面提交的上来的参数
+//		 // 简单的将 螃蟹只数 乘以了 12.4(随便写的)作为预测值返回了
+//		 baitPrediction.setBaitPrediction(baitPrediction.getCrabsCount()* 12.4);
 		 return Result.OK(baitPrediction);
 	 }
 
