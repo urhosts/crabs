@@ -10,28 +10,28 @@ public class StatResultBait {
     private String createTime;
 
     // 饵料个数
-    private Integer baitCount;
+    private Integer baitCount = 0;
 
     // 投喂量
-    private Integer baitInput;
+    private Integer baitInput = 0;
 
     // 摄食量
-    private double baitIntake;
+    private double baitIntake = 0;
 
     // 识别表溶解氧
-    private Double recoDissolvedOxygen;
+    private Double recoDissolvedOxygen = 0.0;
 
     // 预测表溶解氧
-    private Double antiDissolvedOxygen;
+    private Double antiDissolvedOxygen = 0.0;
 
     // 识别表螃蟹只数
-    private Integer recoCrabsCount;
+    private Integer recoCrabsCount = 0;
 
     // 预测表螃蟹只数
-    private Integer antiCrabsCount;
+    private Integer antiCrabsCount = 0;
 
     // 预测表明日投喂量
-    private Double baitPrediction;
+    private Double baitPrediction = 0.0;
 
     private String name;
 
