@@ -49,14 +49,52 @@ const wrapperCol = reactive({
 async function handleSubmit() {
   console.log("查询,handleSubmit");
 }
-
-
+  
+// 通过日期查找对应的条目数据,方便构造鼠标移上去显示标签的构造
+function getItemData(itemDate){
+  if(!dataCache || dataCache.result<1){
+    return {};
+  }
+  let len = dataCache.result.length;
+  for (var i=0; i<len; i++){
+    let info = dataCache.result[i];
+    if(info.createTime==itemDate){
+      return info;
+    }
+  }
+}
+  
 var option = {
   title: {
     text: '蟹群日摄食量可视化',
     left: 'center'
   },
-
+ tooltip: {
+        trigger: 'item',
+        show:true,
+        formatter: function(params){
+          let itemData = getItemData(params.name);
+          if(params.seriesIndex==0){
+            let lab = params.name +"</br>";
+            lab =lab+ "日摄食量: "+ itemData.baitIntake +"克</br>";
+            lab =lab+ "溶解氧: "+ itemData.recoDissolvedOxygen +"mg/L</br>";
+            lab =lab+ "投喂量: "+ itemData.baitInput +"克</br>";
+            lab =lab+ "螃蟹只数: "+ itemData.recoCrabsCount +"只</br>";
+            return lab;  
+          }else{
+            let lab = params.name +"</br>";
+            lab =lab+ "螃蟹只数: "+ itemData.antiCrabsCount +"只</br>";
+            lab =lab+ "溶解氧: "+ itemData.antiDissolvedOxygen +"mg/L</br>";
+            lab =lab+ "预测明日投喂量: "+ itemData.baitPrediction +"克</br>";
+            
+            return lab;  
+          }
+          
+        }
+      },
+  legend: {
+    data: ['今日摄食量估算', '明日投喂量预测']
+  },
   yAxis: {
     name: '克',
     type: 'value',
@@ -98,71 +136,6 @@ var option = {
             "baitPrediction": 0.0,
             "name": "2023-10-04",
             "value": 49.424
-        },
-        {
-            "createTime": "2023-10-05",
-            "baitCount": 16,
-            "baitInput": 50,
-            "baitIntake": 49.424,
-            "recoDissolvedOxygen": 0.0,
-            "antiDissolvedOxygen": 0.0,
-            "recoCrabsCount": 0,
-            "antiCrabsCount": 0,
-            "baitPrediction": 0.0,
-            "name": "2023-10-05",
-            "value": 49.424
-        },
-        {
-            "createTime": "2023-10-06",
-            "baitCount": 16,
-            "baitInput": 50,
-            "baitIntake": 49.424,
-            "recoDissolvedOxygen": 0.0,
-            "antiDissolvedOxygen": 0.0,
-            "recoCrabsCount": 0,
-            "antiCrabsCount": 0,
-            "baitPrediction": 0.0,
-            "name": "2023-10-06",
-            "value": 49.424
-        },
-        {
-            "createTime": "2023-10-07",
-            "baitCount": 16,
-            "baitInput": 50,
-            "baitIntake": 49.424,
-            "recoDissolvedOxygen": 0.0,
-            "antiDissolvedOxygen": 0.0,
-            "recoCrabsCount": 0,
-            "antiCrabsCount": 0,
-            "baitPrediction": 0.0,
-            "name": "2023-10-07",
-            "value": 49.424
-        },
-        {
-            "createTime": "2023-10-08",
-            "baitCount": 110,
-            "baitInput": 60,
-            "baitIntake": 56.04,
-            "recoDissolvedOxygen": 0.0,
-            "antiDissolvedOxygen": 12.0,
-            "recoCrabsCount": 0,
-            "antiCrabsCount": 222,
-            "baitPrediction": 30.0,
-            "name": "2023-10-08",
-            "value": 56.04
-        },
-        {
-            "createTime": "2023-10-09",
-            "baitCount": 36,
-            "baitInput": 80,
-            "baitIntake": 78.704,
-            "recoDissolvedOxygen": 0.0,
-            "antiDissolvedOxygen": 10.6,
-            "recoCrabsCount": 0,
-            "antiCrabsCount": 20,
-            "baitPrediction": 60.0,
-            "name": "2023-10-09",
-            "value": 78.704
         }
     ],
     "timestamp": 1696824443177
@@ -222,10 +195,11 @@ let option = {
 
 
 */
-  
+let dataCache=null;
 async function loadDate(url, type, params) {
   // demoData();
   const res = await defHttp.get({ url, params }, { isTransformResponse: false, errorMessageMode: 'none' });
+  dataCache = res;
   for (let i = 0; i < res.result.length; i++) {
     dataSource.value.push({
       name: `${res.result[i].createTime}`,
