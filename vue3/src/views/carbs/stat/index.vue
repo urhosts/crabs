@@ -78,6 +78,96 @@ var option = {
     },
   ],
 }
+
+/* 
+陈老板，这是后端返回的json
+{
+    "success": true,
+    "message": "",
+    "code": 200,
+    "result": [
+        {
+            "createTime": "2023-10-04",
+            "baitCount": 16,
+            "baitInput": 50,
+            "baitIntake": 49.424,
+            "recoDissolvedOxygen": 0.0,
+            "antiDissolvedOxygen": 0.0,
+            "recoCrabsCount": 0,
+            "antiCrabsCount": 0,
+            "baitPrediction": 0.0,
+            "name": "2023-10-04",
+            "value": 49.424
+        },
+        {
+            "createTime": "2023-10-05",
+            "baitCount": 16,
+            "baitInput": 50,
+            "baitIntake": 49.424,
+            "recoDissolvedOxygen": 0.0,
+            "antiDissolvedOxygen": 0.0,
+            "recoCrabsCount": 0,
+            "antiCrabsCount": 0,
+            "baitPrediction": 0.0,
+            "name": "2023-10-05",
+            "value": 49.424
+        },
+        {
+            "createTime": "2023-10-06",
+            "baitCount": 16,
+            "baitInput": 50,
+            "baitIntake": 49.424,
+            "recoDissolvedOxygen": 0.0,
+            "antiDissolvedOxygen": 0.0,
+            "recoCrabsCount": 0,
+            "antiCrabsCount": 0,
+            "baitPrediction": 0.0,
+            "name": "2023-10-06",
+            "value": 49.424
+        },
+        {
+            "createTime": "2023-10-07",
+            "baitCount": 16,
+            "baitInput": 50,
+            "baitIntake": 49.424,
+            "recoDissolvedOxygen": 0.0,
+            "antiDissolvedOxygen": 0.0,
+            "recoCrabsCount": 0,
+            "antiCrabsCount": 0,
+            "baitPrediction": 0.0,
+            "name": "2023-10-07",
+            "value": 49.424
+        },
+        {
+            "createTime": "2023-10-08",
+            "baitCount": 110,
+            "baitInput": 60,
+            "baitIntake": 56.04,
+            "recoDissolvedOxygen": 0.0,
+            "antiDissolvedOxygen": 12.0,
+            "recoCrabsCount": 0,
+            "antiCrabsCount": 222,
+            "baitPrediction": 30.0,
+            "name": "2023-10-08",
+            "value": 56.04
+        },
+        {
+            "createTime": "2023-10-09",
+            "baitCount": 36,
+            "baitInput": 80,
+            "baitIntake": 78.704,
+            "recoDissolvedOxygen": 0.0,
+            "antiDissolvedOxygen": 10.6,
+            "recoCrabsCount": 0,
+            "antiCrabsCount": 20,
+            "baitPrediction": 60.0,
+            "name": "2023-10-09",
+            "value": 78.704
+        }
+    ],
+    "timestamp": 1696824443177
+}
+*/
 /* 郭老板， 这就是数据结构了
 1. 增加了鼠标一放上去的标签显示
 2. 增加了两个柱状图的颜色区分
