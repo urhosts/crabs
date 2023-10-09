@@ -96,7 +96,11 @@ function getDefaultOpt(){
           }
         },
     legend: {
-      data: ['今日摄食量估算', '明日投喂量预测']
+      data: ['今日摄食量估算', '明日投喂量预测'],
+      orient: 'horizontal', // 水平布局
+      left: 'center',       // 图例位于图表中央
+      bottom: 10            // 图例位于图表底部，可以根据需要调整距离底部的距离
+
     },
     yAxis: {
       name: '克',
@@ -225,8 +229,8 @@ async function newLoadDate(url, type, params) {
     let baitPre = res.result[i].baitPrediction || 0 ;
     let xdate = res.result[i].createTime;
     x_date.push(xdate);
-    baitIntakeArray.push(intake+10);
-    predictArray.push(baitPre+5);
+    baitIntakeArray.push(intake);
+    predictArray.push(baitPre);
 
   }
   let opt = getDefaultOpt();
