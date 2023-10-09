@@ -63,6 +63,7 @@
         if (props.option) {
           Object.assign(option, cloneDeep(props.option));
         }
+        /* 直接使用echart原始参数
         let seriesData = props.chartData.map((item) => {
           return item.value;
         });
@@ -71,6 +72,7 @@
         });
         option.series[0].data = seriesData;
         option.xAxis.data = xAxisData;
+        */
         setOptions(option);
       }
       return { chartRef };
