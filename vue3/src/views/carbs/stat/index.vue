@@ -19,7 +19,7 @@
       <a-tabs >
         <a-tab-pane key="bar" tab="摄食量可视化">
 <!--          <Bar :chartData="dataSource" height="60vh"></Bar>-->
-          <Bar :chartData="dataSource" height="60vh" :option = option></Bar>
+          <Bar ref="bar" :chartData="option" height="60vh" :option = option></Bar>
         </a-tab-pane>
       </a-tabs>
     </a-card>
@@ -30,8 +30,10 @@
 import { defHttp } from '/@/utils/http/axios';
 import { ref, unref, reactive } from 'vue';
 import Bar from '/@/components/chart/Bar.vue';
+import { cloneDeep } from 'lodash-es';
 const dataSource = ref([]);
-const option = ref();
+const bar = ref();
+let option = ref({});
 const queryForm = ref();
 const planModel = ref();
 const dateData = ref();
@@ -64,70 +66,73 @@ function getItemData(itemDate){
     }
   }
 }
-  
-option = {
-  title: {
-    text: '蟹群日摄食量可视化',
-    left: 'center'
-  },
- tooltip: {
-        trigger: 'item',
-        show:true,
-        formatter: function(params){
-          let itemData = getItemData(params.name);
-          if(params.seriesIndex==0){
-            let lab = params.name +"</br>";
-            lab =lab+ "日摄食量: "+ itemData.baitIntake +"克</br>";
-            lab =lab+ "溶解氧: "+ itemData.recoDissolvedOxygen +"mg/L</br>";
-            lab =lab+ "投喂量: "+ itemData.baitInput +"克</br>";
-            lab =lab+ "螃蟹只数: "+ itemData.recoCrabsCount +"只</br>";
-            return lab;  
-          }else{
-            let lab = params.name +"</br>";
-            lab =lab+ "螃蟹只数: "+ itemData.antiCrabsCount +"只</br>";
-            lab =lab+ "溶解氧: "+ itemData.antiDissolvedOxygen +"mg/L</br>";
-            lab =lab+ "预测明日投喂量: "+ itemData.baitPrediction +"克</br>";
-            
-            return lab;  
-          }
-          
-        }
-      },
-  legend: {
-    data: ['今日摄食量估算', '明日投喂量预测']
-  },
-  yAxis: {
-    name: '克',
-    type: 'value',
-    axisLabel: {
-      formatter: '{value} 克'
-    }
-  },
-
-  series: [
-    {
-      name: '今日摄食量估算',
-      type: 'bar',
-      label: {
-        show: true,          // 显示标签
-        position: 'top',     // 标签位置（上方）
-        formatter: '{c} 克',
-      },
-      data: [],
+function getDefaultOpt(){
+  return {
+    title: {
+      text: '蟹群日摄食量可视化',
+      left: 'center'
     },
-    {
-      name: '明日投喂量预测',
-      type: 'bar',
-      label: {
-        show: true,          // 显示标签
-        position: 'top',     // 标签位置（上方）
-        formatter: '{c} 克',
+   tooltip: {
+          trigger: 'item',
+          show:true,
+          formatter: function(params){
+            let itemData = getItemData(params.name);
+            if(params.seriesIndex==0){
+              let lab = params.name +"</br>";
+              lab =lab+ "日摄食量: "+ itemData.baitIntake +"克</br>";
+              lab =lab+ "溶解氧: "+ itemData.recoDissolvedOxygen +"mg/L</br>";
+              lab =lab+ "投喂量: "+ itemData.baitInput +"克</br>";
+              lab =lab+ "螃蟹只数: "+ itemData.recoCrabsCount +"只</br>";
+              return lab;  
+            }else{
+              let lab = params.name +"</br>";
+              lab =lab+ "螃蟹只数: "+ itemData.antiCrabsCount +"只</br>";
+              lab =lab+ "溶解氧: "+ itemData.antiDissolvedOxygen +"mg/L</br>";
+              lab =lab+ "预测明日投喂量: "+ itemData.baitPrediction +"克</br>";
+              
+              return lab;  
+            }
+            
+          }
+        },
+    legend: {
+      data: ['今日摄食量估算', '明日投喂量预测']
+    },
+    yAxis: {
+      name: '克',
+      type: 'value',
+      axisLabel: {
+        formatter: '{value} 克'
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: []
+    },
+    series: [
+      {
+        name: '今日摄食量估算',
+        type: 'bar',
+        label: {
+          show: true,          // 显示标签
+          position: 'top',     // 标签位置（上方）
+          formatter: '{c} 克',
+        },
+        data: [],
       },
-      data: [],
-    }
-  ],
-}
-
+      {
+        name: '明日投喂量预测',
+        type: 'bar',
+        label: {
+          show: true,          // 显示标签
+          position: 'top',     // 标签位置（上方）
+          formatter: '{c} 克',
+        },
+        data: [],
+      }
+    ],
+  }
+}  
 /* 
 陈老板，这是后端返回的json
 {
@@ -210,17 +215,31 @@ let dataCache=null;
 async function newLoadDate(url, type, params) {
   // demoData();
   const res = await defHttp.get({ url, params }, { isTransformResponse: false, errorMessageMode: 'none' });
+  dataSource.value=[];
   dataCache = res;
-  // option.series
   let baitIntakeArray = [];
   let predictArray = [];
+  let x_date = [];
   for (let i = 0; i < res.result.length; i++) {
-    baitIntakeArray.push(res.result[i].baitIntake);
-    predictArray.push(res.result[i].baitPrediction);
+    let intake = res.result[i].baitIntake || 0;
+    let baitPre = res.result[i].baitPrediction || 0 ;
+    let xdate = res.result[i].createTime;
+    x_date.push(xdate);
+    baitIntakeArray.push(intake+10);
+    predictArray.push(baitPre+5);
+
   }
-  option.series[0].data = baitIntakeArray;
-  option.series[1].data = predictArray;
+  let opt = getDefaultOpt();
+  opt.xAxis.data = x_date;
+  opt.series[0].data = baitIntakeArray;
+  opt.series[1].data = predictArray;  
+  Object.assign(option.value, cloneDeep(opt));
+  // Bar.props.option.value = opt;
+  // console.log(Bar.props.option)
+  // bar.value.setOptions(opt)
+  // dataSource.value.push(opt)
 }
+
 async function loadDate(url, type, params) {
   // demoData();
   const res = await defHttp.get({ url, params }, { isTransformResponse: false, errorMessageMode: 'none' });
