@@ -15,6 +15,8 @@ import org.jeecg.config.JeecgBaseConfig;
 import org.jeecg.modules.crabs.bait.entity.RemainingBait;
 import org.jeecg.modules.crabs.bait.entity.StatResultBait;
 import org.jeecg.modules.crabs.bait.service.IRemainingBaitService;
+import org.jeecg.modules.crabs.prediction.entity.BaitPrediction;
+import org.jeecg.modules.crabs.prediction.service.IBaitPredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -43,6 +45,9 @@ import java.util.regex.Pattern;
 public class RemainingBaitController extends JeecgController<RemainingBait, IRemainingBaitService> {
 	@Autowired
 	private IRemainingBaitService remainingBaitService;
+
+	@Autowired
+	private IBaitPredictionService baitPredictionService;
 	 @Autowired
 	 private JeecgBaseConfig jeecgBaseConfig;
 	/**
@@ -271,8 +276,17 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 //		 req.getParameterMap().put("createTime_begin", currentDateStrChar);
 //		 req.getParameterMap().put("createTime_end", oneWeekAgoStrChar);
 
-		 QueryWrapper<RemainingBait> queryWrapper = QueryGenerator.initQueryWrapper(remainingBait, parameter);
-		 List<RemainingBait> baitResultList = remainingBaitService.list(queryWrapper);
+		 QueryWrapper<RemainingBait> queryWrapperRe = QueryGenerator.initQueryWrapper(remainingBait, parameter);
+		 List<RemainingBait> baitResultList = remainingBaitService.list(queryWrapperRe);
+
+		 BaitPrediction baitPrediction = new BaitPrediction();
+		 QueryWrapper<BaitPrediction> queryWrapperPr = QueryGenerator.initQueryWrapper(baitPrediction, parameter);
+		 List<BaitPrediction> baitPredictionList = baitPredictionService.list(queryWrapperPr);
+		 for (BaitPrediction prediction : baitPredictionList){
+
+		 }
+		 
+
 		 List<StatResultBait> statResultBaitList = new ArrayList<>();
 		 // 创建一个SimpleDateFormat对象，指定日期格式
 		 for (RemainingBait baitItem : baitResultList) {
@@ -280,9 +294,14 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 			 statResultBait.setCreateTime(dateFormat.format(baitItem.getCreateTime()));
 			 statResultBait.setBaitCount(baitItem.getBaitCount());
 			 statResultBait.setBaitInput(baitItem.getBaitInput());
+			 statResultBait.setRecoDissolvedOxygen(baitItem.getDissolvedOxygen());
+			 statResultBait.setRecoCrabsCount(baitItem.getCrabsCount());
 			 statResultBaitList.add(statResultBait);
 		 }
+		 
 
+		 
+		 
 		 // 创建一个新的列表，用于存储合并后的结果
 		 List<StatResultBait> mergedList = new ArrayList<>();
 
@@ -295,6 +314,8 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 					 merged.setBaitCount(merged.getBaitCount() + statResult.getBaitCount());
 					 merged.setBaitInput(merged.getBaitInput() + statResult.getBaitInput());
 					 merged.setBaitIntake(merged.getBaitIntake() + statResult.getBaitIntake());
+					 merged.setRecoCrabsCount(merged.getRecoCrabsCount() + statResult.getRecoCrabsCount());
+					 merged.setRecoDissolvedOxygen(merged.getRecoDissolvedOxygen() + statResult.getRecoDissolvedOxygen());
 					 found = true;
 					 break;
 				 }
@@ -305,6 +326,7 @@ public class RemainingBaitController extends JeecgController<RemainingBait, IRem
 			 }
 		 }
 
+		 // 只做计算用途
 		 for (StatResultBait statResultItem : mergedList) {
 			 Integer baitCount = statResultItem.getBaitCount();
 			 Integer baitInput = statResultItem.getBaitInput();
